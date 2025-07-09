@@ -1,0 +1,7 @@
+[project]
+name = "python-sql"
+version = "0.1.0"
+description = "lessons from course Python:SQL"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
