@@ -1,5 +1,5 @@
 l1:
-	uv run scripts/lesson1.py
+	uv run scripts/python_sql/lesson1.py
 
 install:
 	uv sync
