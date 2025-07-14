@@ -2,11 +2,11 @@ import psycopg2
 
 try:
     conn = psycopg2.connect(
-        dbname = "python_sql",
-        user = "alex",
-        password = "ghbdtn",
-        host="127.0.0.1",
-        port = "5432"
+        dbname="python_sql",
+        user="alex",
+        password="ghbdtn",
+        host="88.210.52.150",
+        port="5432"
     )
 except:
     print("Can`t establish connection to database")
