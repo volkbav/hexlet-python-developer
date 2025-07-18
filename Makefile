@@ -4,6 +4,9 @@ l1:
 l3:
 	uv run scripts/python_sql/lesson3_my.py
 
+l4:
+	uv run scripts/python_sql/lesson4.py
+
 install:
 	uv sync
 
@@ -13,4 +16,4 @@ fix_lint:
 test:
 	uv run pytest -s
 
-.PHONY: l1 install l3 fix_lint test
+.PHONY: l1 install l3 fix_lint test l4
