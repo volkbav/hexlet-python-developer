@@ -1,5 +1,5 @@
 import psycopg2
-from psycopg2.extras import execute_batch, execute_values, DictCursor, NamedTupleCursor, LoggingCursor
+from psycopg2.extras import DictCursor, NamedTupleCursor
 
 DB_NAME = "python_sql"
 DB_USER = "alex"

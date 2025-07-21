@@ -1,5 +1,5 @@
 from psycopg2 import connect
-from psycopg2.extras import execute_batch, execute_values
+from .psycopg2.extras import execute_batch, execute_values
 
 DB_NAME = "python_sql"
 DB_USER = "alex"

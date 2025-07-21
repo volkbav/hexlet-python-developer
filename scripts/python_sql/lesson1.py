@@ -1,14 +1,6 @@
-import psycopg2
+from db_connection import get_connection
 
-try:
-    conn = psycopg2.connect(
-        dbname="python_sql",
-        user="alex",
-        host="88.210.52.150",
-        port="5432"
-    )
-except:
-    print("Can`t establish connection to database")
+conn = get_connection()
 
 sql = "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, username VARCHAR(255), phone VARCHAR(255));"
 # Запрос выполняется через создание объекта курсора
