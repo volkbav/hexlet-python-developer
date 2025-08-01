@@ -25,4 +25,7 @@ test:
 l3_flask:
 	uv run gunicorn -w 4 scripts.python_web_flask.lesson3:app
 
-.PHONY: l1 install l3 fix_lint test l4 l5 l6 l3_flask
+server:
+	uv run python3 scripts/python_web_flask/server.py
+
+.PHONY: l1 install l3 fix_lint test l4 l5 l6 l3_flask server
