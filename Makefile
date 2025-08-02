@@ -28,7 +28,10 @@ l3_flask:
 l5_flask:
 	uv run flask --app scripts/python_web_flask/lesson5 run --port 8000
 
+l5_flask_debug:
+	uv run flask --app scripts/python_web_flask/lesson5.py --debug run --port 8000
+
 server:
 	uv run python3 scripts/python_web_flask/server.py
 
-.PHONY: l1 install l3 fix_lint test l4 l5 l6 l3_flask server l5_flask server
+.PHONY: l1 install l3 fix_lint test l4 l5 l6 l3_flask server l5_flask server l5_flask_debug
