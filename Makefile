@@ -29,7 +29,7 @@ l5_flask:
 	uv run flask --app scripts.python_web_flask.lesson5 run --port 8000
 
 l5_flask_debug:
-	uv run flask --app scripts/python_web_flask/lesson5.py --debug run --port 8000
+	flask --app scripts.python_web_flask.lesson5 --debug run --reload --port 8000
 
 server:
 	uv run python3 scripts/python_web_flask/server.py
