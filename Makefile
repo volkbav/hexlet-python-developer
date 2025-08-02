@@ -26,7 +26,7 @@ l3_flask:
 	uv run gunicorn -w 4 scripts.python_web_flask.lesson3:app
 
 l5_flask:
-	uv run flask --app scripts/python_web_flask/lesson5 run --port 8000
+	uv run flask --app scripts.python_web_flask.lesson5 run --port 8000
 
 l5_flask_debug:
 	uv run flask --app scripts/python_web_flask/lesson5.py --debug run --port 8000
