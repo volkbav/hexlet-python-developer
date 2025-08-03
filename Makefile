@@ -31,10 +31,16 @@ l5_flask:
 l5_flask_debug:
 	flask --app scripts.python_web_flask.lesson5 --debug run --reload --port 8000
 
-l6:
+l6_flask:
 	flask --app scripts.python_web_flask.lesson6 --debug run --reload --port 8000
+
+l7_flask:
+	flask --app scripts.python_web_flask.lesson7 --debug run --reload --port 8000
+
+l8_flask:
+	flask --app scripts.python_web_flask.lesson8 --debug run --reload --port 8000
 
 server:
 	uv run python3 scripts/python_web_flask/server.py
 
-.PHONY: l1 install l3 fix_lint test l4 l5 l6 l3_flask server l5_flask server l5_flask_debug
+.PHONY: l1 install l3 fix_lint test 
