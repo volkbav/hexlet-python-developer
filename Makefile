@@ -1,3 +1,6 @@
+server:
+	uv run python3 scripts/python_web_flask/server.py
+
 l1:
 	uv run scripts/python_sql/lesson1.py
 	
@@ -46,7 +49,7 @@ l9_flask:
 l10_flask:
 	flask --app scripts.python_web_flask.lesson10 --debug run --reload --port 8000
 
-server:
-	uv run python3 scripts/python_web_flask/server.py
+l11_flask:
+	flask --app scripts.python_web_flask.lesson11 --debug run --reload --port 8000
 
 .PHONY: l1 install l3 fix_lint test 
