@@ -40,6 +40,12 @@ l7_flask:
 l8_flask:
 	flask --app scripts.python_web_flask.lesson8 --debug run --reload --port 8000
 
+l9_flask:
+	flask --app scripts.python_web_flask.lesson9 --debug run --reload --port 8000
+
+l10_flask:
+	flask --app scripts.python_web_flask.lesson10 --debug run --reload --port 8000
+
 server:
 	uv run python3 scripts/python_web_flask/server.py
 
