@@ -1,8 +1,8 @@
-from flask import render_template, Flask
+from flask import render_template, Flask, request
 
 app = Flask(__name__)
 
-USERS = = [
+USERS = [
     {"id": 1, "name": "mike"},
     {"id": 2, "name": "mishel"},
     {"id": 3, "name": "adel"},
@@ -20,7 +20,19 @@ def users_show(id):
         nickname=nickname
     )
 
-@app.route("/users")
-def user_search():
-    
-    return render_template("users/search.html")
+@app.route("/users/")
+def user_search(): 
+    search = request.args.get("query", "") # "" - значение по умолчанию (пустая строка)
+    if search:
+        users = [u for u in USERS if search.lower() in u['name']]
+    else:
+        users = USERS
+    return render_template(
+        "users/search.html",
+        search=search,
+        users=users
+    )
+
+@app.route("/")
+def hello_world():
+    return "Hello world"
