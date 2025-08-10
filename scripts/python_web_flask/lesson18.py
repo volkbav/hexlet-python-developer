@@ -47,5 +47,5 @@ def user_search():
 @app.route("/")
 def hello_world():
     return render_template(
-        "users/index_18.html"
+        "users/index_l18.html"
     )

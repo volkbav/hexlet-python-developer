@@ -62,6 +62,6 @@ l17_flask:
 	flask --app scripts.python_web_flask.lesson17 --debug run --reload --port 8000
 
 l18_flask:
-	flask --app scripts.python_web_flask.lesson17 --debug run --reload --port 8000
+	flask --app scripts.python_web_flask.lesson18 --debug run --reload --port 8000
 
 .PHONY: l1 install l3 fix_lint test 
