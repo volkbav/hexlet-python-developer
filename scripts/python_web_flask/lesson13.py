@@ -23,6 +23,9 @@ def users_show(id):
 @app.route("/users/")
 def user_search(): 
     search = request.args.get("query", "") # "" - значение по умолчанию (пустая строка)
+    user_id = request.args.get("id", "")
+    if user_id:
+        return redirect(url_for('users_show', id=int(user_id)))
     if search:
         users = [u for u in USERS if search.lower() in u['name']]
     else:

@@ -1,0 +1,21 @@
+<!-- courses/index.html -->
+
+{% extends "users/index.html" %}
+
+<!-- этот блок заменит блок title из родительского шаблона -->
+{% block title %}Поисковая форма{% endblock %}
+
+<!-- этот блок заменит блок content из родительского шаблона -->
+{% block content %}
+<form action="/users" method="get">
+  <input type="search" name="query" value="{{ search }}" />
+  <input type="submit" value="Search" />
+</form>
+<hr>
+<ul>
+  {% for user in users %}
+    <li><a href="{{ url_for('user_search', id=user.id)}}">{{ user.name }}</a></li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
