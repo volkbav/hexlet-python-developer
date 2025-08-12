@@ -1,3 +1,7 @@
-id = {{ id }}
-<br>
-nickname = {{ nickname }}
+{% extends "users/index.html" %}
+{% block content %}
+<hr>
+    id = {{ id }}
+    <br>
+    nickname = {{ nickname }}
+{% endblock %}

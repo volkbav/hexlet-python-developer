@@ -1,16 +1,21 @@
-from flask import render_template, Flask, request, redirect, url_for
+from flask import render_template, Flask, request, redirect, url_for, flash, get_flashed_messages
+import json, os
 
 app = Flask(__name__)
 
-USERS = [
-    {"id": 1, "name": "mike"},
-    {"id": 2, "name": "mishel"},
-    {"id": 3, "name": "adel"},
-    {"id": 4, "name": "keks"},
-    {"id": 5, "name": "kamila"},
-]
+DATA_FILE = os.path.join(
+    os.path.dirname(__file__),
+    "data",
+    "users.json"
+)
 
 app.logger.setLevel('DEBUG')
+
+
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
+if app.config['SECRET_KEY'] is None:
+    raise RuntimeError("SECRET_KEY is not set in environment variables!")
 
 
 @app.route("/users/<int:id>")
@@ -20,7 +25,8 @@ def users_show(id):
     app.logger.warning("logger warning")
     app.logger.error('logger error')
     app.logger.critical('logger critical')
-    user = filter(lambda name: name["id"] == id, USERS)
+    repo = read_repo()
+    user = filter(lambda name: name["id"] == id, repo)
     nickname = next(user, {'name': 'Unknown'})['name']
     return render_template(
         "users/show.html",
@@ -30,18 +36,19 @@ def users_show(id):
 
 @app.route("/users/")
 def user_search(): 
+    repo = read_repo()
     search = request.args.get("query", "") # "" - значение по умолчанию (пустая строка)
     user_id = request.args.get("id", "")
     if user_id:
         return redirect(url_for('users_show', id=int(user_id)))
     if search:
-        users = [u for u in USERS if search.lower() in u['name']]
+        users = [u for u in repo if search.lower() in u['name']]
     else:
-        users = USERS
+        users = repo
     return render_template(
         "users/search_l18.html",
         search=search,
-        users=users
+        users=users,
     )
 
 @app.route("/")
@@ -49,3 +56,64 @@ def hello_world():
     return render_template(
         "users/index_l18.html"
     )
+
+@app.post("/users")
+def users_post():
+    repo = read_repo()
+    print(f'repo: \n{repo}')
+    max_id = max((u["id"] for u in repo if "id" in u), default=0) + 1
+    # извлекаем данные из формы
+    user = request.form.to_dict()
+    user['id'] = max_id
+    # валидируем данные
+    errors = validate(user)
+    if errors:
+        return render_template(
+            "users/new.html",
+            user=user,
+            errors=errors,
+        ), 422
+    # сохраняем нового пользователя
+    write_repo(user)
+    # делаем редирект на список пользователей
+    flash("user is added and saved in file", "success")
+    return redirect("/users", code=302)
+
+
+@app.route("/users/new")
+def users_new():
+    
+    user = {
+        "name": "",
+        "email": "",
+    }
+    errors = {}
+    return render_template(
+        "users/new.html",
+        user=user,
+        errors=errors
+        )
+
+
+def validate(user):
+    errors = {}
+    if not user["name"]:
+        errors["name"] = "Can't be blank"
+    return errors
+
+
+def read_repo():
+    if not os.path.exists(DATA_FILE):
+        return []
+    with open(DATA_FILE, "r") as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            return []
+    return data
+
+def write_repo(user):
+    repo = read_repo()
+    repo.append(user)
+    with open(DATA_FILE, "w") as f:
+        json.dump(repo, f, ensure_ascii=False, indent=4)
