@@ -118,7 +118,6 @@ def validate(user):
 
     if any(user["email"] in e["email"] for e in repo):
          errors["email"] = "this email exists"
-    
     return errors
 
 
