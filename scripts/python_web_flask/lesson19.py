@@ -19,6 +19,15 @@ if app.config['SECRET_KEY'] is None:
     raise RuntimeError("SECRET_KEY is not set in environment variables!")
 
 
+# /
+@app.route("/")
+def index_show():
+    return render_template(
+        "users/l19_index.html"
+    )
+
+
+# /users/id
 @app.route("/users/<int:id>")
 def users_show(id):
     app.logger.debug("logger debug")
@@ -30,11 +39,12 @@ def users_show(id):
     user = filter(lambda name: name["id"] == id, repo)
     nickname = next(user, {'name': 'Unknown'})['name']
     return render_template(
-        "users/show.html",
+        "users/l19_show.html",
         id=id,
         nickname=nickname
     )
 
+# /users/
 @app.route("/users/")
 def user_search(): 
     repo = read_repo()
@@ -47,21 +57,15 @@ def user_search():
     else:
         users = repo
     return render_template(
-        "users/search_l18.html",
+        "users/l19_search.html",
         search=search,
         users=users,
     )
 
-@app.route("/")
-def hello_world():
-    return render_template(
-        "users/index_l18.html"
-    )
 
-@app.post("/users")
+@app.post("/users/")
 def users_post():
     repo = read_repo()
-    print(f'repo: \n{repo}')
     max_id = max((u["id"] for u in repo if "id" in u), default=0) + 1
     # извлекаем данные из формы
     user = request.form.to_dict()
@@ -70,7 +74,7 @@ def users_post():
     errors = validate(user)
     if errors:
         return render_template(
-            "users/new.html",
+            "users/l19_new.html",
             user=user,
             errors=errors,
         ), 422
@@ -81,25 +85,40 @@ def users_post():
     return redirect("/users", code=302)
 
 
+# /users/new
 @app.route("/users/new")
 def users_new():
-    
     user = {
         "name": "",
         "email": "",
     }
     errors = {}
     return render_template(
-        "users/new.html",
+        "users/l19_new.html",
         user=user,
         errors=errors
         )
 
-
+# functions
 def validate(user):
     errors = {}
+    # nickname
     if not user["name"]:
         errors["name"] = "Can't be blank"
+    elif len(user["name"]) < 4:
+        errors["name"] = "Nickname must be grater than 4 characters"
+    
+    # email
+    repo = read_repo()
+    # errors["email"] = ["this email exists" for e in repo if user["email"] in e["email"]]
+    if not user["email"]:
+        errors["email"] = "Can't be blank"
+    elif len(user["email"]) < 4:
+        errors["email"] = "Email must be grater than 4 characters"
+
+    if any(user["email"] in e["email"] for e in repo):
+         errors["email"] = "this email exists"
+    
     return errors
 
 
@@ -112,6 +131,7 @@ def read_repo():
         except json.JSONDecodeError:
             return []
     return data
+
 
 def write_repo(user):
     repo = read_repo()
