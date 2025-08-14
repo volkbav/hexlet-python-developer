@@ -26,12 +26,12 @@ def insert_users(users_data):
         port=DB_PORT
     ) as conn:
         with conn.cursor() as cur:
-            if type(users_data) == tuple:
+            if isinstance(users_data, tuple):
                 query = """INSERT INTO users (username, phone)
                             VALUES (%s, %s)
                             RETURNING username, phone;"""
                 execute_batch(cur, query, users_data)
-            elif type(users_data) == list:
+            elif isinstance(users_data, list):
                 query = """INSERT INTO users (username, phone)
                             VALUES %s;"""
                 execute_values(cur, query, users_data)
