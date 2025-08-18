@@ -1,22 +1,12 @@
-<!-- users/search_l18.html -->
-{% extends "users/index_l18.html" %}
+<!-- courses/index.html -->
 
+{% extends "users/index.html" %}
 
 <!-- этот блок заменит блок title из родительского шаблона -->
 {% block title %}Поисковая форма{% endblock %}
 
 <!-- этот блок заменит блок content из родительского шаблона -->
 {% block content %}
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <ul class="flashes">
-      {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-
 <form action="/users" method="get">
   <input type="search" name="query" value="{{ search }}" />
   <input type="submit" value="Search" />
@@ -24,7 +14,7 @@
 <hr>
 <ul>
   {% for user in users %}
-    <li><a href="{{ url_for('user_search', id=user.id)}}">{{ user.name }}</a></li>
+    <li>{{ user.name }}</li>
   {% endfor %}
 </ul>
 

@@ -15,7 +15,7 @@ def users_show(id):
     user = filter(lambda name: name["id"] == id, USERS)
     nickname = next(user, {'name': 'Unknown'})['name']
     return render_template(
-        "users/show.html",
+        "users/old/show.html",
         id=id,
         nickname=nickname
     )
@@ -31,7 +31,7 @@ def user_search():
     else:
         users = USERS
     return render_template(
-        "users/search.html",
+        "users/old/search.html",
         search=search,
         users=users
     )

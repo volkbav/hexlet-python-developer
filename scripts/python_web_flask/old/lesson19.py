@@ -23,7 +23,7 @@ if app.config['SECRET_KEY'] is None:
 @app.route("/")
 def index_show():
     return render_template(
-        "users/l19_index.html"
+        "users/old/l19_index.html"
     )
 
 
@@ -39,7 +39,7 @@ def users_show(id):
     user = filter(lambda name: name["id"] == id, repo)
     nickname = next(user, {'name': 'Unknown'})['name']
     return render_template(
-        "users/l19_show.html",
+        "users/old/l19_show.html",
         id=id,
         nickname=nickname
     )
@@ -57,7 +57,7 @@ def user_search():
     else:
         users = repo
     return render_template(
-        "users/l19_search.html",
+        "users/old/l19_search.html",
         search=search,
         users=users,
     )
@@ -74,7 +74,7 @@ def users_post():
     errors = validate(user)
     if errors:
         return render_template(
-            "users/l19_new.html",
+            "users/old/l19_new.html",
             user=user,
             errors=errors,
         ), 422
@@ -94,7 +94,7 @@ def users_new():
     }
     errors = {}
     return render_template(
-        "users/l19_new.html",
+        "users/old/l19_new.html",
         user=user,
         errors=errors
         )

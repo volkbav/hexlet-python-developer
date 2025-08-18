@@ -13,6 +13,6 @@ COURSE = [
 @app.route("/courses/<int:id>")
 def users_show(id):
     return render_template(
-        "courses/index11.html",
+        "courses/old/index11.html",
         courses=COURSE
     )

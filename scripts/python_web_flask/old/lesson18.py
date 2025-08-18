@@ -47,7 +47,7 @@ def user_search():
     else:
         users = repo
     return render_template(
-        "users/search_l18.html",
+        "users/old/search_l18.html",
         search=search,
         users=users,
     )
@@ -55,7 +55,7 @@ def user_search():
 @app.route("/")
 def hello_world():
     return render_template(
-        "users/index_l18.html"
+        "users/old/index_l18.html"
     )
 
 @app.post("/users")
@@ -70,7 +70,7 @@ def users_post():
     errors = validate(user)
     if errors:
         return render_template(
-            "users/new.html",
+            "users/old/new.html",
             user=user,
             errors=errors,
         ), 422
@@ -90,7 +90,7 @@ def users_new():
     }
     errors = {}
     return render_template(
-        "users/new.html",
+        "users/old/new.html",
         user=user,
         errors=errors
         )
