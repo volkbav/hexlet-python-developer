@@ -1,6 +1,6 @@
 from flask import render_template, Flask, request, redirect, url_for, flash
-import json
-import os
+import json, os, secrets
+
 
 app = Flask(__name__)
 
@@ -13,17 +13,18 @@ DATA_FILE = os.path.join(
 app.logger.setLevel('DEBUG')
 
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
-if app.config['SECRET_KEY'] is None:
-    raise RuntimeError("SECRET_KEY is not set in environment variables!")
+secret = os.getenv("SECRET_KEY")
+if secret is None:
+    secret = secrets.token_hex(16)  # случайный ключ
+    app.logger.warning("SECRET_KEY не найден. Использую сгенерированный: %s", secret)
+app.config["SECRET_KEY"] = secret
 
 
 # /
 @app.route("/")
 def index_show():
     return render_template(
-        "users/l19_index.html"
+        "users/index.html"
     )
 
 
@@ -39,7 +40,7 @@ def users_show(id):
     user = filter(lambda name: name["id"] == id, repo)
     nickname = next(user, {'name': 'Unknown'})['name']
     return render_template(
-        "users/l19_show.html",
+        "users/show.html",
         id=id,
         nickname=nickname
     )
@@ -57,7 +58,7 @@ def user_search():
     else:
         users = repo
     return render_template(
-        "users/l19_search.html",
+        "users/search.html",
         search=search,
         users=users,
     )
@@ -74,7 +75,7 @@ def users_post():
     errors = validate(user)
     if errors:
         return render_template(
-            "users/l19_new.html",
+            "users/new.html",
             user=user,
             errors=errors,
         ), 422
@@ -94,7 +95,7 @@ def users_new():
     }
     errors = {}
     return render_template(
-        "users/l19_new.html",
+        "users/new.html",
         user=user,
         errors=errors
         )
