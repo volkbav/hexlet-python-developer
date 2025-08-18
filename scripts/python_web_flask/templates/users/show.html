@@ -4,4 +4,6 @@
     id = {{ id }}
     <br>
     nickname = {{ nickname }}
+    <br>
+    <a href="{{ url_for('users_edit', id=id)}}">Edit</a>
 {% endblock %}

@@ -47,7 +47,7 @@ def users_show(id):
 
 # /users/
 @app.route("/users/")
-def user_search(): 
+def users_index(): 
     repo = read_repo()
     search = request.args.get("query", "") # "" - значение по умолчанию (пустая строка)
     user_id = request.args.get("id", "")
@@ -100,6 +100,37 @@ def users_new():
         errors=errors
         )
 
+
+# /users/<id>/edit
+@app.route("/users/<id>/edit")
+def users_edit(id):
+    user = user_find(id)
+    errors = {}
+
+    return render_template(
+        "users/edit.html",
+        user=user,
+        errors=errors
+    )
+
+@app.route("/users/<id>/patch", methods=["POST"])
+def users_patch(id):
+    user = user_find(id)
+    data = request.form.to_dict()
+
+    errors = validate(data)
+    if errors:
+        return render_template(
+            "users/edit.html",
+            user=user,
+            errors=errors,
+        ), 422
+
+    update_repo(id, data)
+    flash("User has been updated", "success")
+    return redirect(url_for("users_index"))
+
+
 # functions
 def validate(user):
     errors = {}
@@ -117,8 +148,8 @@ def validate(user):
     elif len(user["email"]) < 4:
         errors["email"] = "Email must be grater than 4 characters"
 
-    if any(user["email"] in e["email"] for e in repo):
-         errors["email"] = "this email exists"
+#    if any(user["email"] in e["email"] for e in repo):
+#         errors["email"] = "this email exists"
     return errors
 
 
@@ -136,5 +167,22 @@ def read_repo():
 def write_repo(user):
     repo = read_repo()
     repo.append(user)
+    with open(DATA_FILE, "w") as f:
+        json.dump(repo, f, ensure_ascii=False, indent=4)
+
+def user_find(id):
+    repo = read_repo()
+    for u in repo:
+        if u["id"] == int(id):
+            return u
+    return None
+
+def update_repo(id, new_data):
+    repo = read_repo()
+    for i, u in enumerate(repo):
+        if u["id"] == int(id):
+            new_data["id"] = int(id)   # сохраняем id
+            repo[i] = new_data
+            break
     with open(DATA_FILE, "w") as f:
         json.dump(repo, f, ensure_ascii=False, indent=4)
