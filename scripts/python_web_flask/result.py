@@ -131,7 +131,16 @@ def users_patch(id):
     return redirect(url_for("users_index"))
 
 
-# functions
+# ---lesson 22---
+# /user/<id>/delete
+@app.post('/users/<id>/delete')
+def users_delete(id):
+    user_destroy(id)
+    flash("User has been deleted", "success")
+    return redirect(url_for("users_index"))
+
+
+# ---functions---
 def validate(user):
     errors = {}
     # nickname
@@ -186,3 +195,13 @@ def update_repo(id, new_data):
             break
     with open(DATA_FILE, "w") as f:
         json.dump(repo, f, ensure_ascii=False, indent=4)
+
+
+def user_destroy(id):
+    repo = read_repo()
+    new_data = []
+    for i, u in enumerate(repo):
+        if u["id"] != int(id):
+            new_data.append(repo[i])
+    with open(DATA_FILE, "w") as f:
+        json.dump(new_data, f, ensure_ascii=False, indent=4)
