@@ -1,5 +1,7 @@
 from flask import render_template, Flask, request, redirect, url_for, flash
-import json, os, secrets
+import json
+import os
+import secrets
 
 
 app = Flask(__name__)
@@ -10,14 +12,18 @@ DATA_FILE = os.path.join(
     "users.json"
 )
 
+SECRET_FILE = os.path.join(os.path.dirname(__file__), "secret_key.txt")
+
+if os.path.exists(SECRET_FILE):
+    with open(SECRET_FILE, "r") as f:
+        secret_key = f.read().strip()
+else:
+    secret_key = secrets.token_hex(16)
+    with open(SECRET_FILE, "w") as f:
+        f.write(secret_key)
+
+app.config["SECRET_KEY"] = secret_key
 app.logger.setLevel('DEBUG')
-
-
-secret = os.getenv("SECRET_KEY")
-if secret is None:
-    secret = secrets.token_hex(16)  # случайный ключ
-    app.logger.warning("SECRET_KEY не найден. Использую сгенерированный: %s", secret)
-app.config["SECRET_KEY"] = secret
 
 
 # /
