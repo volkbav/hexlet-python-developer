@@ -33,10 +33,12 @@ class UserRepository:
     def __init__(self, conn):
         self.conn = conn
     
+
     def get_content(self):
         with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute("SELECT * FROM users")
             return [dict(row) for row in cur]
+
 
     def validate(self, data, current_id=None):
         errors = {}
@@ -72,13 +74,11 @@ class UserRepository:
         return errors
 
 
-
     def save(self, user):
         if "id" in user and user["id"]:
             self._update(user)
         else:
             self._create(user)
-
         
 
     def find(self, id):
@@ -91,15 +91,16 @@ class UserRepository:
     def _update(self, user):
         with self.conn.cursor() as cur:
             cur.execute(
-                "UPDATE users SET nickname = %s, email = %s WHERE id = %s",
+                "UPDATE users SET nickname = %s, email = %s, updated_at = NOW() WHERE id = %s",
                 (user["nickname"], user["email"], user["id"]),
             )
         self.conn.commit()
 
+
     def _create(self, user):
         with self.conn.cursor() as cur:
             cur.execute(
-                "INSERT INTO users (nickname, email) VALUES (%s, %s) RETURNING id",
+                "INSERT INTO users (nickname, email, created_at) VALUES (%s, %s, NOW()) RETURNING id",
                 (user["nickname"], user["email"]),
             )
             id = cur.fetchone()[0]
