@@ -73,4 +73,7 @@ l19_flask:
 flask:
 	@flask run --host=0.0.0.0 --port=8000
 
+build_flask:
+	scripts/python_web_flask/build.sh
+
 .PHONY: l1 install l3 fix_lint test flask

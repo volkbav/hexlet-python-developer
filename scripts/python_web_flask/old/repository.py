@@ -2,18 +2,16 @@ import os
 import secrets
 import json
 
-import psycopg2
-from psycopg2.extras import DictCursor
+# import psycopg2
+# from psycopg2.extras import DictCursor
+# from .db_connection import get_connection
 
 
-# file as DB
-"""
 DATA_FILE = os.path.join(
     os.path.dirname(__file__),
     "data",
     "users.json"
 )
-"""
 
 SECRET_FILE = os.path.join(os.path.dirname(__file__), "secret_key.txt")
 
@@ -30,14 +28,9 @@ def get_secret_key():
 
 
 class UserRepository:
-    def __init__(self, conn):
-        self.conn = conn
+    def __init__(self, file_path=DATA_FILE):
+        self.file_path = file_path
     
-    def get_content(self):
-        with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            cur.execute("SELECT * FROM users")
-            return [dict(row) for row in cur]
-
     def validate(self, data, current_id=None):
         errors = {}
         # nickname
@@ -58,7 +51,6 @@ class UserRepository:
                     break
         return errors
 
-"""
     def _read(self):
         if not os.path.exists(DATA_FILE):
             return []
@@ -68,40 +60,39 @@ class UserRepository:
             except json.JSONDecodeError:
                 return []
         return data
-"""
 
-    def save(self, user):
-        if "id" in user and user["id"]:
-            self._update(car)
-        else:
-            self._create(car)
-
-        
+    def _write(self, data):
+        repo = self._read()
+        repo.append(data)
+        with open(DATA_FILE, "w") as f:
+            json.dump(repo, f, ensure_ascii=False, indent=4)
 
     def find(self, id):
-        with self.conn.cursor(cursor_factory=DictCursor) as cur:
-            cur.execute("SELECT * FROM users WHERE id = %s", (id,))
-            row = cur.fetchone()
-            return dict(row) if row else None
+        repo = self._read()
+        for u in repo:
+            if u["id"] == int(id):
+                return u
+        return None
+
+    def update(self, id, new_data):
+        repo = self._read()
+        for i, u in enumerate(repo):
+            if u["id"] == int(id):
+                new_data["id"] = int(id)   # сохраняем id
+                repo[i] = new_data
+                break
+        with open(DATA_FILE, "w") as f:
+            json.dump(repo, f, ensure_ascii=False, indent=4)
 
 
-    def _update(self, user):
-        with self.conn.cursor() as cur:
-            cur.execute(
-                "UPDATE users SET nickname = %s, email = %s WHERE id = %s",
-                (user["nickname"], user["email"], user["id"]),
-            )
-        self.conn.commit()
-
-    def _create(self, car):
-        with self.conn.cursor() as cur:
-            cur.execute(
-                "INSERT INTO users (nickname, email) VALUES (%s, %s) RETURNING id",
-                (car["nickname"], car["email"]),
-            )
-            id = cur.fetchone()[0]
-            car["id"] = id
-        self.conn.commit()
-
+    def delete(self, id):
+        repo = self._read()
+        new_data = []
+        for i, u in enumerate(repo):
+            if u["id"] != int(id):
+                new_data.append(repo[i])
+        with open(DATA_FILE, "w") as f:
+            json.dump(new_data, f, ensure_ascii=False, indent=4)
+    
     def get_all(self):
-        return self.get_content()
+        return self._read()

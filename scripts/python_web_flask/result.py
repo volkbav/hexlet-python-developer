@@ -1,15 +1,15 @@
+# flask import
 from flask import render_template, Flask, request, redirect, url_for, flash
 from .repository import get_secret_key, UserRepository
+# DB import
 from .db_connection import get_connection
-import psycopg2
-
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = get_secret_key()
 app.logger.setLevel('DEBUG')
-repo = UserRepository()
-
 conn = get_connection()
+repo = UserRepository(conn)
+
 
 # /
 @app.route("/")
@@ -71,7 +71,7 @@ def users_post():
             errors=errors,
         ), 422
     # сохраняем нового пользователя
-    repo._write(user)
+    repo.save(user)
     # делаем редирект на список пользователей
     flash("user is added and saved in file", "success")
     return redirect("/users", code=302)
@@ -117,7 +117,7 @@ def users_patch(id):
             errors=errors,
         ), 422
 
-    repo.update(id, data)
+    repo._update(data)
     flash("User has been updated", "success")
     return redirect(url_for("users_index"))
 
