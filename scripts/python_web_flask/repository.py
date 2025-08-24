@@ -40,41 +40,44 @@ class UserRepository:
 
     def validate(self, data, current_id=None):
         errors = {}
+
         # nickname
-        if not data["name"]:
-            errors["name"] = "Can't be blank"
-        elif len(data["name"]) < 4:
-            errors["name"] = "Nickname must be grater than 4 characters" 
+        if not data.get("nickname"):
+            errors["nickname"] = "Can't be blank"
+        elif len(data["nickname"]) < 4:
+            errors["nickname"] = "Nickname must be greater than 4 characters"
+
         # email        
-        if not data["email"]:
+        if not data.get("email"):
             errors["email"] = "Can't be blank"
         elif len(data["email"]) < 4:
-            errors["email"] = "Email must be grater than 4 characters"
+            errors["email"] = "Email must be greater than 4 characters"
         else:
-            for user in self._read():
-        # если email совпадает и это не текущий пользователь → ошибка
-                if user["email"] == data["email"] and user["id"] != int(current_id or -1):
+            with self.conn.cursor(cursor_factory=DictCursor) as cur:
+                if current_id:
+                    # Проверка с исключением текущего пользователя
+                    cur.execute(
+                        "SELECT id FROM users WHERE email = %s AND id != %s",
+                        (data["email"], current_id)
+                    )
+                else:
+                    # Проверка при создании нового
+                    cur.execute(
+                        "SELECT id FROM users WHERE email = %s",
+                        (data["email"],)
+                    )
+                if cur.fetchone():
                     errors["email"] = "This email already exists"
-                    break
+
         return errors
 
-"""
-    def _read(self):
-        if not os.path.exists(DATA_FILE):
-            return []
-        with open(DATA_FILE, "r") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                return []
-        return data
-"""
+
 
     def save(self, user):
         if "id" in user and user["id"]:
-            self._update(car)
+            self._update(user)
         else:
-            self._create(car)
+            self._create(user)
 
         
 
@@ -93,15 +96,20 @@ class UserRepository:
             )
         self.conn.commit()
 
-    def _create(self, car):
+    def _create(self, user):
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO users (nickname, email) VALUES (%s, %s) RETURNING id",
-                (car["nickname"], car["email"]),
+                (user["nickname"], user["email"]),
             )
             id = cur.fetchone()[0]
-            car["id"] = id
+            user["id"] = id
         self.conn.commit()
 
     def get_all(self):
         return self.get_content()
+    
+    def delete(self, id):
+        with self.conn.cursor() as cur:
+            cur.execute("DELETE FROM users WHERE id = %s", (id,))
+        self.conn.commit()

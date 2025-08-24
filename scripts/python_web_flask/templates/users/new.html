@@ -3,10 +3,10 @@
   <div>
     <label>
       Имя
-      <input type="text" name="name" value="{{ user.name }}">
+      <input type="text" name="nickname" value="{{ user.nickname }}">
     </label>
-    {% if errors['name'] %}
-      <div>{{ errors['name'] }}</div>
+    {% if errors['nickname'] %}
+      <div>{{ errors['nickname'] }}</div>
     {% endif %}
   </div>
   <div>

@@ -9,7 +9,7 @@ def get_connection():
             dbname=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
             host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT")
+            port=int(os.getenv("DB_PORT"))
             )
         return conn
     except psycopg2.Error as e:

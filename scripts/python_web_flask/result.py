@@ -27,9 +27,9 @@ def users_show(id):
     app.logger.warning("logger warning")
     app.logger.error('logger error')
     app.logger.critical('logger critical')
-    users = repo.get_all()
-    user = filter(lambda name: name["id"] == id, users)
-    nickname = next(user, {'name': 'Unknown'})['name']
+    
+    user = repo.find(id)
+    nickname = user['nickname'] if user else 'Unknown'
     return render_template(
         "users/show.html",
         id=id,
@@ -46,7 +46,7 @@ def users_index():
     if user_id:
         return redirect(url_for('users_show', id=int(user_id)))
     if search:
-        users = [u for u in users if search.lower() in u['name']]
+        users = [u for u in users if search.lower() in u['nickname'].lower()]
     
     return render_template(
         "users/search.html",
@@ -57,12 +57,10 @@ def users_index():
 
 @app.post("/users/")
 def users_post():
-    users = repo.get_all()
-    max_id = max((u["id"] for u in users if "id" in u), default=0) + 1
-    # извлекаем данные из формы
-    user = request.form.to_dict()
-    user['id'] = max_id
-    # валидируем данные
+    user = {
+        "nickname": request.form.get("nickname", ""),
+        "email": request.form.get("email", "")
+    }
     errors = repo.validate(user)
     if errors:
         return render_template(
@@ -70,10 +68,8 @@ def users_post():
             user=user,
             errors=errors,
         ), 422
-    # сохраняем нового пользователя
     repo.save(user)
-    # делаем редирект на список пользователей
-    flash("user is added and saved in file", "success")
+    flash("User is added and saved in DB", "success")
     return redirect("/users", code=302)
 
 
@@ -81,7 +77,7 @@ def users_post():
 @app.route("/users/new")
 def users_new():
     user = {
-        "name": "",
+        "nickname": "",
         "email": "",
     }
     errors = {}
@@ -116,7 +112,7 @@ def users_patch(id):
             user=user,
             errors=errors,
         ), 422
-
+    data['id'] = id
     repo._update(data)
     flash("User has been updated", "success")
     return redirect(url_for("users_index"))

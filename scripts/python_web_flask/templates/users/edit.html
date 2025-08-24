@@ -2,10 +2,10 @@
     <div>
       <label>
           Название *
-          <input type="text" name="name" value="{{ user.name }}">
+          <input type="text" name="nickname" value="{{ user.nickname }}">
       </label>
       {% if errors %}
-          <div>{{ errors.name }}</div>
+          <div>{{ errors.nickname }}</div>
       {% endif %}
     </div>
      <div>
