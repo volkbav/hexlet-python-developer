@@ -1,10 +1,15 @@
 from flask import render_template, Flask, request, redirect, url_for, flash
 from .repository import get_secret_key, UserRepository
+from .db_connection import get_connection
+import psycopg2
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = get_secret_key()
 app.logger.setLevel('DEBUG')
 repo = UserRepository()
+
+conn = get_connection()
 
 # /
 @app.route("/")
