@@ -1,3 +1,6 @@
+include .env
+export $(shell sed 's/=.*//' .env)
+
 server:
 	uv run python3 scripts/python_web_flask/server.py
 
@@ -68,6 +71,6 @@ l19_flask:
 	flask --app scripts.python_web_flask.old.lesson19 --debug run --reload --port 8000
 
 flask:
-	flask --app scripts.python_web_flask.result --debug run --reload --port 8000
+	@flask run --host=0.0.0.0 --port=8000
 
 .PHONY: l1 install l3 fix_lint test flask
