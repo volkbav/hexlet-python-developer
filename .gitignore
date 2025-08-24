@@ -12,3 +12,6 @@ wheels/
 
 # secret keys
 *secret_key.txt
+
+# env
+.env
