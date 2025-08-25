@@ -76,4 +76,7 @@ flask:
 build_flask:
 	scripts/python_web_flask/build.sh
 
-.PHONY: l1 install l3 fix_lint test flask
+gunicorn:
+	@gunicorn -b 0.0.0.0:8000 scripts.python_web_flask.result:app --workers 4 --reload
+
+.PHONY: l1 install l3 fix_lint test flask gunicorn
