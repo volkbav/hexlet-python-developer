@@ -12,6 +12,6 @@ def get_connection():
             port=int(os.getenv("DB_PORT"))
             )
         return conn
-    except psycopg2.Error as e:
+    except psycopg2.Error:
         print("Can`t establish connection to database: {e}")
         return None
