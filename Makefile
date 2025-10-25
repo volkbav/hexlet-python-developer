@@ -79,4 +79,8 @@ build_flask:
 gunicorn:
 	@gunicorn -b 0.0.0.0:8000 scripts.python_web_flask.result:app --workers 4 --reload
 
+.PHONY: test
+test:
+	uv run python -m pytest -svv
+
 .PHONY: l1 install l3 fix_lint test flask gunicorn
